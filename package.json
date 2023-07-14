@@ -1,7 +1,7 @@
 {
     "name": "caliper",
     "description": "Performance benchmarking for Hyperledger blockchain technologies.",
-    "version": "0.5.1-unstable",
+    "version": "0.5.2-adhara",
     "repository": {
         "type": "git",
         "url": "https://github.com/hyperledger/caliper"
@@ -75,6 +75,7 @@
     "workspaces": [
         "packages/caliper-core",
         "packages/caliper-ethereum",
+        "packages/caliper-eth-gateway",
         "packages/caliper-fabric",
         "packages/caliper-fisco-bcos",
         "packages/caliper-cli",
