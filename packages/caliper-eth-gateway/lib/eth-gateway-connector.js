@@ -127,12 +127,6 @@ class EthGatewayConnector extends ConnectorBase {
                 path: args.contracts[key].path
             };
         }
-        // if (this.ethGatewayConfig.fromApplication) {
-        //     context.fromApplication = this.ethGatewayConfig.fromApplication;
-        // }
-        // if (this.ethGatewayConfig.fromUser) {
-        //     context.fromUser = this.ethGatewayConfig.fromUser;
-        // }
         this.context = context;
         return context;
     }
@@ -154,7 +148,6 @@ class EthGatewayConnector extends ConnectorBase {
         const context = this.context;
         let status = new TxStatus();
         let referenceId = uuidv4().substring(0,8);
-        //logger.info('Using reference id ['+ referenceId + ']')
         let requestBody = !request.readOnly ?
           {
               txMeta: {
@@ -184,7 +177,6 @@ class EthGatewayConnector extends ConnectorBase {
                 status.SetStatusSuccess();
             };
             try {
-                //logger.info('Request path for call: ' + new URL(requestPath, context.url))
                 // eslint-disable-next-line no-undef
                 const queryResponse = await fetch(new URL(requestPath, context.url), {
                     method: 'POST',
@@ -192,7 +184,6 @@ class EthGatewayConnector extends ConnectorBase {
                     body: JSON.stringify(requestBody)
                 });
                 let queryResult = await queryResponse.json();
-                //logger.info('Query result' + JSON.stringify(queryResult))
                 onSuccess(queryResult);
             } catch (err) {
                 onFailure(err);
@@ -210,7 +201,6 @@ class EthGatewayConnector extends ConnectorBase {
                 status.SetStatusSuccess();
             };
             try {
-                 //logger.info('Request path for tx: ' + new URL(requestPath, context.url))
                 // eslint-disable-next-line no-undef
                 const submitResponse = await fetch(new URL(requestPath, context.url), {
                     method: 'POST',
@@ -225,25 +215,20 @@ class EthGatewayConnector extends ConnectorBase {
                     //let count = 1
                     await this.sleep(200);
                     while (state === 'PENDING') {
-                        //logger.info('Request path for receipt: ' + new URL('/_services/transactions/' + submitResult.output.referenceId, context.url))
                         // eslint-disable-next-line no-undef
                         const queryResponse = await fetch(new URL('/_services/transactions/' + submitResult.output.referenceId, context.url), {
                             method: 'GET',
                             headers: context.headers,
                         });
                         queryResult = await queryResponse.json();
-                        //logger.info('Query result' + JSON.stringify(queryResult))
                         if (queryResult.error) {
-                            //logger.info('Failure after ' + count + ' polls')
                             onFailure(queryResult.error);
                             state = 'FAILED';
                         }
                         state = queryResult.state;
                         if (state === 'SUCCESS') {
-                            //logger.info('Success after ' + count + ' polls')
                             onSuccess(queryResult);
                         }
-                        //count++
                         await this.sleep(500);
                     }
                 }
