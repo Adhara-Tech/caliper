@@ -80,6 +80,8 @@ class ConnectorBase extends ConnectorInterface {
             let result = new TxStatus();
 
             try {
+                // TODO: Remove me
+                // Logger.info(JSON.stringify(requests.args))
                 result = await this._sendSingleRequest(requests);
             } catch(error) {
                 Logger.error(`Unexpected error while sending request: ${error.stack || error}`);
